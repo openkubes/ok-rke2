@@ -1,0 +1,24 @@
+---
+- name: Wait for kubectl to be available
+  ansible.builtin.wait_for:
+    path: /var/lib/rancher/rke2/bin/kubectl
+    timeout: 120
+
+- name: Get node name
+  ansible.builtin.command:
+    cmd: /var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml get nodes -o jsonpath='{.items[0].metadata.name}'
+  register: node_name
+  changed_when: false
+
+- name: Remove control-plane taint from node
+  ansible.builtin.command:
+    cmd: >
+      /var/lib/rancher/rke2/bin/kubectl
+      --kubeconfig /etc/rancher/rke2/rke2.yaml
+      taint node {{ node_name.stdout }}
+      node-role.kubernetes.io/control-plane:NoSchedule-
+  register: taint_result
+  changed_when: "'untainted' in taint_result.stdout"
+  failed_when:
+    - taint_result.rc != 0
+    - "'not found' not in taint_result.stderr"

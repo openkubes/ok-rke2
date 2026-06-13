@@ -1,0 +1,34 @@
+---
+- name: Apply sysctl settings
+  ansible.posix.sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: true
+  loop: "{{ rke2_sysctl | dict2items }}"
+
+- name: Configure Hetzner vSwitch
+  ansible.builtin.include_tasks: vswitch.yml
+  when: hetzner_vswitch_enabled
+
+- name: Apply SSH hardening
+  ansible.builtin.include_tasks: hardening.yml
+  when: rke2_ssh_hardening
+
+- name: Install RKE2 server
+  ansible.builtin.include_tasks: server.yml
+  when: rke2_type == "server"
+
+- name: Install RKE2 agent
+  ansible.builtin.include_tasks: agent.yml
+  when: rke2_type == "agent"
+
+- name: Remove control-plane taint (single-node)
+  ansible.builtin.include_tasks: taint.yml
+  when:
+    - rke2_type == "server"
+    - rke2_single_node
+
+- name: Configure GPU node
+  ansible.builtin.include_tasks: gpu.yml
+  when: rke2_gpu_node

@@ -1,0 +1,22 @@
+---
+- name: Disable SSH password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^#?PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: Restart SSH
+
+- name: Install fail2ban
+  ansible.builtin.apt:
+    name: fail2ban
+    state: present
+    update_cache: true
+  when: rke2_fail2ban
+
+- name: Enable and start fail2ban
+  ansible.builtin.systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+  when: rke2_fail2ban

@@ -1,0 +1,12 @@
+---
+- name: Deploy Hetzner vSwitch Netplan config
+  ansible.builtin.template:
+    src: netplan-vswitch.j2
+    dest: /etc/netplan/60-vswitch.yaml
+    mode: "0600"
+  notify: Apply Netplan
+
+- name: Apply Netplan immediately
+  ansible.builtin.command:
+    cmd: netplan apply
+  changed_when: true

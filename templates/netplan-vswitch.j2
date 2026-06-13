@@ -1,0 +1,18 @@
+network:
+  version: 2
+  ethernets:
+    {{ hetzner_vswitch_interface }}:
+      dhcp4: false
+      dhcp6: false
+  vlans:
+    {{ hetzner_vswitch_interface }}.{{ hetzner_vswitch_vlan_id }}:
+      id: {{ hetzner_vswitch_vlan_id }}
+      link: {{ hetzner_vswitch_interface }}
+      mtu: {{ hetzner_vswitch_mtu }}
+      addresses:
+        - {{ hetzner_vswitch_ip }}/{{ hetzner_vswitch_prefix }}
+      routes:
+{% for route in hetzner_vswitch_routes %}
+        - to: {{ route.to }}
+          via: {{ route.via }}
+{% endfor %}

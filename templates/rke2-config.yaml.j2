@@ -1,0 +1,26 @@
+---
+{% if rke2_type == "server" %}
+# RKE2 Server Configuration
+tls-san:
+{% for san in rke2_tls_san %}
+  - {{ san }}
+{% endfor %}
+
+cluster-cidr: {{ rke2_cluster_cidr }}
+service-cidr: {{ rke2_service_cidr }}
+
+cni: {{ rke2_cni }}
+
+disable:
+{% for item in rke2_disable %}
+  - {{ item }}
+{% endfor %}
+
+token: {{ rke2_token }}
+
+{% else %}
+# RKE2 Agent Configuration
+server: {{ rke2_server_url }}
+token: {{ rke2_token }}
+
+{% endif %}

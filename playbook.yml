@@ -1,0 +1,28 @@
+---
+- name: Deploy RKE2 server (ok-infra)
+  hosts: rke2_servers
+  roles:
+    - role: ok-rke2
+      vars:
+        rke2_token: "{{ lookup('env', 'RKE2_TOKEN') | default('changeme-replace-in-production') }}"
+        rke2_tls_san:
+          - 192.168.100.2
+          - 10.0.0.1        # WireGuard VPN IP of ok-vpn
+        hetzner_vswitch_vlan_id: 4000
+        hetzner_vswitch_gateway: 192.168.100.1
+        hetzner_vswitch_routes:
+          - to: 192.168.0.0/16
+            via: 192.168.100.1
+
+- name: Deploy RKE2 agent (ok-gpu)
+  hosts: rke2_agents
+  roles:
+    - role: ok-rke2
+      vars:
+        rke2_token: "{{ lookup('env', 'RKE2_TOKEN') | default('changeme-replace-in-production') }}"
+        rke2_server_url: https://192.168.100.2:9345
+        hetzner_vswitch_vlan_id: 4000
+        hetzner_vswitch_gateway: 192.168.100.1
+        hetzner_vswitch_routes:
+          - to: 192.168.0.0/16
+            via: 192.168.100.1

@@ -1,0 +1,62 @@
+---
+# RKE2 Version
+rke2_version: "v1.33.0+rke2r1"
+
+# RKE2 type: server or agent
+rke2_type: "server"
+
+# Single-node mode — removes control-plane taint
+rke2_single_node: false
+
+# RKE2 server URL (for agents)
+rke2_server_url: "https://192.168.100.2:9345"
+
+# RKE2 token (set this in your inventory or vault)
+rke2_token: "changeme"
+
+# TLS SANs for the RKE2 API server
+rke2_tls_san: []
+
+# CNI plugin: calico or cilium
+rke2_cni: "calico"
+
+# Cluster CIDRs
+rke2_cluster_cidr: "10.42.0.0/16"
+rke2_service_cidr: "10.43.0.0/16"
+
+# Disable components
+rke2_disable:
+  - rke2-ingress-nginx
+
+# Hetzner vSwitch configuration
+hetzner_vswitch_enabled: true
+hetzner_vswitch_interface: "enp4s0"
+hetzner_vswitch_vlan_id: 4000
+hetzner_vswitch_mtu: 1400
+hetzner_vswitch_ip: ""
+hetzner_vswitch_prefix: 24
+hetzner_vswitch_gateway: "192.168.100.1"
+hetzner_vswitch_routes:
+  - to: "192.168.0.0/16"
+    via: "{{ hetzner_vswitch_gateway }}"
+
+# SSH hardening
+rke2_ssh_hardening: true
+
+# fail2ban
+rke2_fail2ban: true
+
+# GPU node
+rke2_gpu_node: false
+rke2_gpu_taint: "nvidia.com/gpu=present:NoSchedule"
+rke2_gpu_label: "node-role.kubernetes.io/gpu=true"
+
+# sysctl settings
+rke2_sysctl:
+  net.ipv4.ip_forward: 1
+  net.ipv4.conf.all.rp_filter: 0
+  net.bridge.bridge-nf-call-iptables: 1
+  net.bridge.bridge-nf-call-ip6tables: 1
+  fs.inotify.max_user_instances: 8192
+  fs.inotify.max_user_watches: 524288
+  vm.overcommit_memory: 1

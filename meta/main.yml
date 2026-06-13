@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: ok_rke2
+  author: Kubernauts
+  description: OpenKubes-optimized Ansible Role for RKE2 cluster deployment on Hetzner Bare Metal
+  company: Kubernauts
+  license: Apache-2.0
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - "24.04"
+  galaxy_tags:
+    - kubernetes
+    - rke2
+    - hetzner
+    - openkubes
+    - k8s
+    - gpu
+    - kubevirt
+
+dependencies: []
